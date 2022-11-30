@@ -7,7 +7,7 @@ namespace ObserverPatternAcademy
         static void Main(string[] args)
         {
 
-            var p = new Academy("UCL");
+            var p = new Academy("UCL", "Seebladsgade");
 
             var s1 = new Student(p, "Jens");
 

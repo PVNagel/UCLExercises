@@ -1,4 +1,4 @@
-﻿using ObserverPatternAcademy.AbstractClasses;
+﻿using ObserverPatternAcademy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,28 +7,20 @@ using System.Threading.Tasks;
 
 namespace ObserverPatternAcademy.School
 {
-    public class Student : Observer
+    public class Student : Person, IObserver
     {
-        private Academy subject;
+        private Academy academy;
         public string Message { get; set; }
 
-        private string name;
-
-        public string Name
+        public Student(Academy academy, string name) : base(name)
         {
-            get { return name; }
+            this.academy = academy;
         }
 
-        public Student(Academy subject, string name)
+        public void Update()
         {
-            this.subject = subject;
-            this.name = name;
-        }
-
-        public override void Update()
-        {
-            Message = subject.Message;
-            Console.WriteLine("Studerende " + Name + " modtog nyheden " + Message + " fra akademiet " + subject.Name);
+            Message = academy.Message;
+            Console.WriteLine("Studerende " + Name + " modtog nyheden " + Message + " fra akademiet " + academy.Name);
         }
     }
 }

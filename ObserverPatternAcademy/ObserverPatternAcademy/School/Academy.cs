@@ -1,4 +1,4 @@
-﻿using ObserverPatternAcademy.AbstractClasses;
+﻿using ObserverPatternAcademy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace ObserverPatternAcademy.School
 {
-    public class Academy : Subject
+    public class Academy : Organization, ISubject
     {
-		private string name;
+        private List<IObserver> observers = new List<IObserver>();
 
-		public string Name
-		{
-			get { return name; }
-		}
 		private string message;
 
 		public string Message
@@ -27,9 +23,26 @@ namespace ObserverPatternAcademy.School
 			}
 		}
 
-		public Academy(string name)
+		public Academy(string name, string address) : base(name)
 		{
-			this.name = name;
+            Address = address;
 		}
-	}
+        public void Attach(IObserver observer)
+        {
+            observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            observers.Remove(observer);
+        }
+
+        public void Notify()
+        {
+            foreach (IObserver observer in observers)
+            {
+                observer.Update();
+            }
+        }
+    }
 }

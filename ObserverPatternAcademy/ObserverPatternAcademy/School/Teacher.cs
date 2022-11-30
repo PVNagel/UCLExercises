@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ObserverPatternAcademy.AbstractClasses
+namespace ObserverPatternAcademy.School
 {
-    public abstract class Observer
+    internal class Teacher
     {
-        public abstract void Update();
     }
 }
