@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ObserverPatternAcademy.Interfaces
+namespace ObserverPatternAcademy.School
 {
-    public interface IObserver
+    public interface INotifyMessageChanged
     {
-        void Update(object sender, EventArgs e);
+        public event EventHandler MessageChanged;
+
     }
 }
