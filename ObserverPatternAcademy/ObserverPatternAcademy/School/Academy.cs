@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ObserverPatternAcademy.School
 {
-    public class Academy : Organization, ISubject
+    public class Academy : Organization
     {
-        private List<IObserver> observers = new List<IObserver>();
-
+        //private List<IObserver> observers = new List<IObserver>();
+        public NotifyHandler MessageChanged;
 		private string message;
 
 		public string Message
@@ -19,7 +19,7 @@ namespace ObserverPatternAcademy.School
 			set 
 			{ 
 				message = value;
-				Notify();
+				MessageChanged();
 			}
 		}
 
@@ -29,20 +29,17 @@ namespace ObserverPatternAcademy.School
 		}
         public void Attach(IObserver observer)
         {
-            observers.Add(observer);
+            MessageChanged += observer.Update;
         }
 
         public void Detach(IObserver observer)
         {
-            observers.Remove(observer);
+            MessageChanged -= observer.Update;
         }
 
-        public void Notify()
+        public void OnMessagedChanged()
         {
-            foreach (IObserver observer in observers)
-            {
-                observer.Update();
-            }
+            MessageChanged();
         }
     }
 }

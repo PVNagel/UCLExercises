@@ -14,15 +14,13 @@ namespace ObserverPatternAcademy
 
             var s3 = new Student(p, "Susan");
 
-            p.Attach(s1);
-
-            p.Attach(s2);
-
-            p.Attach(s3);
+            p.MessageChanged += s1.Update;
+            p.MessageChanged += s2.Update;
+            p.MessageChanged += s3.Update;
 
             p.Message = "Så er der julefrokost!";
 
-            p.Detach(s2);
+            p.MessageChanged -= s2.Update;
 
             p.Message = "Så er der fredagsbar!";
 

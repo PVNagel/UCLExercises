@@ -33,14 +33,14 @@ namespace BonusApp
         public double GetBonus()
         {
             double result;
-            result = Bonuses.TenPercent(GetValueOfProducts());
+            result = Bonus(GetValueOfProducts());
             return result;
         }
 
         public double GetTotalPrice()
         {
             double result = GetValueOfProducts();
-            result = result - Bonuses.TenPercent(GetValueOfProducts());
+            result = result - Bonus(GetValueOfProducts());
             return result;
         }
     }
