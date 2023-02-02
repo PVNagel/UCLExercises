@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TheMoviesApplication.ViewModels;
 
 namespace TheMoviesApplication
 {
@@ -20,9 +21,12 @@ namespace TheMoviesApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainViewModel mvm;
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = mvm;
         }
     }
 }
