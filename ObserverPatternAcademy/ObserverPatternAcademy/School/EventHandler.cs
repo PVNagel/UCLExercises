@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace ObserverPatternAcademy.School
 {
-    public delegate void NotifyHandler();
+    public delegate void EventHandler(object sender, EventArgs e);
 }

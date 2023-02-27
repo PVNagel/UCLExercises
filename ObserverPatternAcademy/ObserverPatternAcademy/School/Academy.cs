@@ -1,25 +1,26 @@
 ﻿using ObserverPatternAcademy.Interfaces;
+using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ObserverPatternAcademy.School
 {
-    public class Academy : Organization
+    public class Academy : Organization, INotifyPropertyChanged
     {
-        //private List<IObserver> observers = new List<IObserver>();
-        public NotifyHandler MessageChanged;
 		private string message;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-		public string Message
+        public string Message
 		{
 			get { return message; }
 			set 
 			{ 
 				message = value;
-				MessageChanged();
+				PropertyChanged(this, null);
 			}
 		}
 
@@ -29,17 +30,17 @@ namespace ObserverPatternAcademy.School
 		}
         public void Attach(IObserver observer)
         {
-            MessageChanged += observer.Update;
+            PropertyChanged += observer.Update;
         }
 
         public void Detach(IObserver observer)
         {
-            MessageChanged -= observer.Update;
+            PropertyChanged -= observer.Update;
         }
 
-        public void OnMessagedChanged()
+        public void OnMessagedChanged(object sender, EventArgs e)
         {
-            MessageChanged();
+            PropertyChanged(this, null);
         }
     }
 }

@@ -9,18 +9,19 @@ namespace ObserverPatternAcademy.School
 {
     public class Student : Person, IObserver
     {
-        private Academy academy;
         public string Message { get; set; }
 
-        public Student(Academy academy, string name) : base(name)
+        public Student(string name) : base(name)
         {
-            this.academy = academy;
         }
 
-        public void Update()
+        public void Update(object sender, EventArgs e)
         {
-            Message = academy.Message;
-            Console.WriteLine("Studerende " + Name + " modtog nyheden " + Message + " fra akademiet " + academy.Name);
+            string academyName = ((Academy)sender).Name;
+            string academyMessage = ((Academy)sender).Message;
+            string academyAddress = ((Academy)sender).Address;
+
+            Console.WriteLine("Studerende " + Name + " modtog nyheden " + academyMessage + " fra akademiet " + academyName + ", " + academyAddress);
         }
     }
 }
