@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,12 +8,31 @@ namespace PetParadise
     public class TreatmentRepo
     {
         private List<Treatment> treatments = new List<Treatment>();
+        private string connectionString = "Server = 10.56.8.36; Database = DB_2023_68; User Id = STUDENT_68; Password = OPENDB_68; TrustServerCertificate=true";
 
         public TreatmentRepo()
         {
             // Load all treatment data from database via SQL statements and populate treatment repository
-
-            // IMPLEMENT THIS!
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand("SELECT TreatID, TreatService, TreatDate, TreatCharge FROM TREATMENT", connection);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Treatment treatment;
+                        treatment = new Treatment
+                        {
+                            TreatId = int.Parse(dataReader["TreatID"].ToString()),
+                            Service = dataReader["TreatService"].ToString(),
+                            Date = DateTime.Parse(dataReader["TreatDate"].ToString()),
+                            Charge = double.Parse(dataReader["TreatCharge"].ToString()),
+                        };
+                        treatments.Add(treatment);
+                    }
+                }
+            }
         }
 
         public int Add(Treatment treatment)
@@ -29,22 +49,32 @@ namespace PetParadise
         public List<Treatment> GetAll()
         {
             // Retrieve all treatments from database
-
-            List<Treatment> result = new List<Treatment>();
-
-            // IMPLEMENT THIS!
-
-            return result;
+            return treatments;
         }
         public Treatment GetById(int id)
         {
             // Get treatment by id from database
-
-            Treatment result = null;
-
-            // IMPLEMENT THIS!
-
-            return result;
+            Treatment treatment = null;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand("SELECT TreatID, TreatService, TreatDate, TreatCharge FROM TREATMENT WHERE TreatID =" + id, connection);
+                using (SqlDataReader dataReader = cmd.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        treatment = new Treatment
+                        {
+                            TreatId = int.Parse(dataReader["TreatID"].ToString()),
+                            Service = dataReader["TreatService"].ToString(),
+                            Date = DateTime.Parse(dataReader["TreatDate"].ToString()),
+                            Charge = double.Parse(dataReader["TreatCharge"].ToString()),
+                        };
+                        return treatment;
+                    }
+                }
+            }
+            return treatment;
         }
         public void Update(Treatment treatment)
         {
