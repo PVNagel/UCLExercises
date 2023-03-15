@@ -1,0 +1,81 @@
+1. double Calculate(string expression)
+Delegate type: Single Delegate
+public delegate double CalculateDelegate(string x)
+Generic delegate: Func
+Func<string, double> calcExpression;
+
+---------------------------------------------------
+
+2. int CompareTo(int other)
+Delegate type: Multicast Delegate
+public delegate int FunctionHandler(int x)
+Func<int, int> Function;
+
+3. int Factorial (int n)
+Delegate type: Multicast Delegate
+public delegate int FunctionHandler(int x)
+Func<int, int> Function;
+
+7. int Fibonacci(int n)
+Delegate type: Multicast Delegate
+public delegate int FunctionHandler(int x)
+Func<int, int> Function;
+
+--------------------------------------------------
+
+4. void Delete(int index)
+Delegate type: single delegate
+public delegate void DeletionDelegate(int x)
+Action<int> Deletion;
+
+--------------------------------------------------
+
+5. bool Exist(int id)
+Delegate type: multicast delegate
+public delegate bool ControlHandler(int x)
+Predicate<int> ControlHandler;
+
+12. bool Contains(int id)
+Delegate type: multicast delegate
+public delegate bool ControlHandler(int x)
+Predicate<int> ControlHandler;
+
+--------------------------------------------------
+
+6. string GetUserChoice()
+delegate type: Multicast delegate
+public delegate string GetEventHandler()
+Func<string> GetEvent;
+
+9. string GetAllPets()
+delegate type: Multicast delegate
+public delegate string GetEventHandler()
+Func<string> GetEvent;
+
+--------------------------------------------------
+
+8. void NotifySubscribers(string message)
+Delegate type: multicast delegate
+public delegate void NotifyDelegate(string x)
+Action<string> Notify;
+
+11. void ShowScore(string tournamentName)
+Delegate type: multicast delegate
+public delegate void NotifyDelegate(string x)
+Action<string> Notify;
+
+-------------------------------------------------
+
+10. bool IsMatchesFinished()
+Delegate type: single delegate
+public delegate bool MatchControlDelegate()
+Func<bool> MatchControl;
+
+-------------------------------------------------
+
+13. int RectangleArea(int height, int width)
+Delegate type: single delegate
+public delegate int ArealCalculatorDelegate(int y, int x)
+Func<int, int, int> Areal;
+
+-------------------------------------------------
