@@ -1,0 +1,22 @@
+﻿<Window x:Class="WPFSimpleGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFSimpleGUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="300" Width="500">
+    <Grid>
+        <TextBox x:Name="tbLine1" HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="Line 1" VerticalAlignment="Top" Width="120" TextChanged="tbLine1_TextChanged"/>
+        <TextBox x:Name="tbLine2" HorizontalAlignment="Center" Margin="0,125,0,0" TextWrapping="Wrap" Text="Line 2" VerticalAlignment="Top" Width="120" TextChanged="tbLine2_TextChanged"/>
+        <TextBox x:Name="tbLine3" HorizontalAlignment="Center" Margin="0,150,0,0" TextWrapping="Wrap" Text="Line 3" VerticalAlignment="Top" Width="120" TextChanged="tbLine3_TextChanged"/>
+        <TextBox x:Name="tbLine4" HorizontalAlignment="Center" Margin="0,175,0,0" TextWrapping="Wrap" Text="Line 4" VerticalAlignment="Top" Width="120" TextChanged="tbLine4_TextChanged"/>
+        <Label Content="1" HorizontalAlignment="Left" Margin="150,96,0,0" VerticalAlignment="Top"/>
+        <Label Content="2" HorizontalAlignment="Left" Margin="150,122,0,0" VerticalAlignment="Top"/>
+        <Label Content="3" HorizontalAlignment="Left" Margin="150,146,0,0" VerticalAlignment="Top"/>
+        <Label Content="4" HorizontalAlignment="Left" Margin="150,171,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="ScrollUpButton" Content="Scroll Up" HorizontalAlignment="Left" Margin="350,112,0,0" VerticalAlignment="Top" Click="ScrollUpButton_Click"/>
+        <Button x:Name="ClearButton" Content="Clear" HorizontalAlignment="Left" Margin="350,137,0,0" VerticalAlignment="Top" Click="ClearButton_Click"/>
+        <Button x:Name="ScrollDownButton" Content="Scroll Down" HorizontalAlignment="Left" Margin="350,163,0,0" VerticalAlignment="Top" Click="ScrollDownButton_Click"/>
+    </Grid>
+</Window>
