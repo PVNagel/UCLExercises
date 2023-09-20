@@ -1,0 +1,18 @@
+﻿@model Root
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-left">
+    <h1 class="display-4">Weather forecast: @DateTime.Now</h1>
+    @foreach(var item in Model.weather){
+        <p>Main: @item.main</p>
+        <p>Description: @item.description <img src="@($"https://openweathermap.org/img/wn/{@item.icon}.png")" /></p>
+        <p>Humidity: @Model.main.humidity%</p>
+        <p>Pressure: @Model.main.pressure hPa</p>
+        <p>Temp max: @Model.main.temp_max°</p>
+        <p>Temp: @Model.main.temp°</p>
+        <p>Temp min: @Model.main.temp_min°</p>
+        <p>Feels Like: @Model.main.feels_like°</p>
+    }
+</div>
