@@ -5,7 +5,11 @@ using System.Text;
 namespace AuktionsClient {
 	public class Client {
 		private const int port = 30000;
-		static public void Main(string[] args) {
+
+		//Vuongs server ip adresse:
+        //private const string serverIpAddress = "10.228.32.134";
+
+        static public void Main(string[] args) {
 			Client client = new Client();
 			client.Run();
 		}
@@ -14,7 +18,11 @@ namespace AuktionsClient {
 			Socket server;
 
 			Console.WriteLine("Starting client...");
+
+			//Til at connecte til Vuongs Server:
+			//IPAddress ipa = IPAddress.Parse(serverIpAddress);
 			IPAddress ipa = Tools.GetIPAddress();
+
 			try {
 				server = new Socket(ipa.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 				IPEndPoint localEndPoint = new IPEndPoint(ipa, port);

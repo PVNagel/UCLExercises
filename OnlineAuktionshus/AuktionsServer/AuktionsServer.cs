@@ -1,147 +1,152 @@
-﻿namespace AuktionsServer {
-	using System.Net.Sockets;
-	using System.Net;
-	using System.Text;
-	public class AuktionsServer {
-		private const int port = 30000;
-		private bool Running { get; set; } = true;
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
-		static void Main(string[] args) {
-			AuktionsServer program = new AuktionsServer();
-			program.Run();
-		}
+namespace AuktionsServer
+{
+    public class AuktionsServer
+    {
+        private const int port = 30000;
+        private bool Running { get; set; } = true;
 
-		private void Run() {
-			Socket listener;
+        static void Main(string[] args)
+        {
+            AuktionsServer program = new AuktionsServer();
 
-			Console.WriteLine("Starting server...");
-			IPAddress ipa = Tools.GetIPAddress();
-			try {
-				listener = new Socket(ipa.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-				IPEndPoint localEndPoint = new IPEndPoint(ipa, port);
-				listener.Bind(localEndPoint);
-				listener.Listen();
+            program.Run();
+        }
 
-				GetClient(listener);
+        private void Run()
+        {
+            IPAddress ipa = Tools.GetIPAddress();
+            try
+            {
+                TcpListener listener = new TcpListener(ipa, port);
+                listener.Start();
+                Console.WriteLine("Server started...");
 
-			} catch (Exception ex) {
-				Console.WriteLine(ex.ToString());
-			}
-		}
+                while (Running)
+                {
+                    // Accept a new client connection and create a new thread to handle it
+                    TcpClient client = listener.AcceptTcpClient();
+                    Thread clientThread = new Thread(() => HandleClient(client));
+                    clientThread.Start();
+                }
 
-		private void GetClient(Socket listener) {
-			try {
-				do {
-					Console.Write($"Listening for connection on {listener.LocalEndPoint} ... ");
-					Socket clientSocket = listener.Accept();
-					Console.WriteLine($"\nCaught one at {clientSocket.LocalEndPoint}...\n");
+                listener.Stop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
-					Tools.State endState = HandleClient(clientSocket);
-					switch (endState) {
-						case Tools.State.CLOSESERVER:
-							Running = false;
-							Console.WriteLine("Closing server\n");
-							break;
+        private void HandleClient(TcpClient client)
+        {
+            try
+            {
+                Console.WriteLine($"Client connected: {((IPEndPoint)client.Client.RemoteEndPoint).ToString()}");
 
-						case Tools.State.EXIT:
-							Console.WriteLine("Done handling client\n");
-							break;
-					}
+                using (NetworkStream stream = client.GetStream())
+                {
+                    byte[] bytes = new byte[1024];
+                    int highestBid = 0;
+                    string data;
+                    Tools.State state = Tools.State.RUNNING;
 
-					clientSocket.Shutdown(SocketShutdown.Both);
-					clientSocket.Close();
-				} while (Running);
+                    do
+                    {
+                        int numBytes = stream.Read(bytes, 0, bytes.Length);
+                        data = Encoding.ASCII.GetString(bytes, 0, numBytes);
+                        data = data.ToUpper();
 
-			} catch (Exception e) {
-				Console.WriteLine(e.ToString());
-			} finally {
-				try {
-					listener.Shutdown(SocketShutdown.Both);
-					listener.Close();
-				} catch (Exception e) {
-					_ = e.ToString();
-				}
-			}
-		}
+                        if (!ValidDataSyntax(data))
+                        {
+                            byte[] errorMessage = Encoding.ASCII.GetBytes("Wrong syntax");
+                            stream.Write(errorMessage, 0, errorMessage.Length);
+                        }
+                        else
+                        {
+                            char messageType = data[0];
+                            string argument = data.Substring(2);
+                            argument = argument.Remove(argument.Length - 1);
 
-		private Tools.State HandleClient(Socket client) {
-			byte[] bytes = new Byte[1024];
-			int highestBid = 0;
-			string data;
-			Tools.State state = Tools.State.RUNNING;
+                            switch (messageType)
+                            {
+                                case 'B':
+                                    highestBid = Bid(stream, argument, highestBid);
+                                    break;
 
-			do {
-				try {
-					int numByte = client.Receive(bytes);
+                                case 'C':
+                                    switch (argument)
+                                    {
+                                        case "EXIT":
+                                            state = Tools.State.EXIT;
+                                            byte[] exitMessage = Encoding.ASCII.GetBytes("Bye");
+                                            stream.Write(exitMessage, 0, exitMessage.Length);
+                                            break;
 
-					data = Encoding.ASCII.GetString(bytes, 0, numByte);
-					data = data.ToUpper();
+                                        case "CLOSESERVER":
+                                            state = Tools.State.CLOSESERVER;
+                                            byte[] closeMessage = Encoding.ASCII.GetBytes("Closing server");
+                                            stream.Write(closeMessage, 0, closeMessage.Length);
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }
+                    } while (state == Tools.State.RUNNING);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error handling client: {e.ToString()}");
+            }
+            finally
+            {
+                client.Close();
+                Console.WriteLine($"Client disconnected: {((IPEndPoint)client.Client.RemoteEndPoint).ToString()}");
+            }
+        }
 
-					if (!ValidDataSyntax(data)) {
-						client.Send(Encoding.ASCII.GetBytes("Wrong syntax"));
-					} else {
-						char messageType = data[0];
-						string argument = data.Substring(2);
-						argument = argument.Remove(argument.Length - 1);
+        private int Bid(NetworkStream stream, string argument, int highestBid)
+        {
+            int result = highestBid;
 
-						switch (messageType) {
-							case 'B':
-								highestBid = Bid(client, argument, highestBid);
-								break;
+            if (int.TryParse(argument, out var bid))
+            {
+                if (bid > highestBid)
+                {
+                    result = bid;
+                    byte[] successMessage = Encoding.ASCII.GetBytes("OK");
+                    stream.Write(successMessage, 0, successMessage.Length);
+                }
+                else
+                {
+                    byte[] lowBidMessage = Encoding.ASCII.GetBytes("Bid is too low");
+                    stream.Write(lowBidMessage, 0, lowBidMessage.Length);
+                }
+            }
+            else
+            {
+                byte[] invalidBidMessage = Encoding.ASCII.GetBytes("Bid is not an integer");
+                stream.Write(invalidBidMessage, 0, invalidBidMessage.Length);
+            }
 
-							case 'C':
-								switch (argument) {
-									case "EXIT":
-										state = Tools.State.EXIT;
-										client.Send(Encoding.ASCII.GetBytes("Bye"));
-										break;
+            return result;
+        }
 
-									case "CLOSESERVER":
-										state = Tools.State.CLOSESERVER;
-										client.Send(Encoding.ASCII.GetBytes("Closing server"));
-										break;
-								}
-								break;
-						}
-					}
-				} catch (Exception ) {
-					Console.WriteLine("Problems reading client - disconnecting");
-					state = Tools.State.EXIT;
-				}
-			} while (state == Tools.State.RUNNING);
+        private bool ValidDataSyntax(string data)
+        {
+            bool ok =
+                 (data.Length >= 4) &&
+                ((data[0] == 'B') || (data[0] == 'C')) &&
+                 (data[1] == '@') &&
+                 (data[data.Length - 1] == '#');
 
-			return state;
-		}
-
-		private static int Bid(Socket client, string argument, int highestBid) {
-			int result = highestBid;
-
-			if (int.TryParse(argument, out var bid)) {
-				if (bid > highestBid) {
-					result = bid;
-					client.Send(Encoding.ASCII.GetBytes("OK"));
-				} else {
-					client.Send(Encoding.ASCII.GetBytes("Bid is too low"));
-				}
-			} else {
-				client.Send(Encoding.ASCII.GetBytes("Bid is not integer"));
-			}
-			return result;
-		}
-
-		private bool ValidDataSyntax(string data) {
-			//Valid data: X@Y#
-			//		X (a char) is type of message , Y is message itself, @ and # are delimiters
-			bool ok =
-				 (data.Length >= 4) &&
-				((data[0] == 'B') || (data[0] == 'C')) &&
-				 //B : bid (then the message holds the amount)
-				 //C : Command (message then tells to exit client or to close server - more to come...)
-				 //more to come...
-				 (data[1] == '@') &&
-				 (data[data.Length - 1] == '#');
-
-			return ok;
-		}
-	}
+            return ok;
+        }
+    }
 }
