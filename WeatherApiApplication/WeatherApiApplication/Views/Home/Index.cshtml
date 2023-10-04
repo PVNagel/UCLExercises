@@ -1,18 +1,91 @@
 ﻿@model Root
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Weather Page";
 }
 
-<div class="text-left">
-    <h1 class="display-4">Weather forecast: @DateTime.Now</h1>
-    @foreach(var item in Model.weather){
-        <p>Main: @item.main</p>
-        <p>Description: @item.description <img src="@($"https://openweathermap.org/img/wn/{@item.icon}.png")" /></p>
-        <p>Humidity: @Model.main.humidity%</p>
-        <p>Pressure: @Model.main.pressure hPa</p>
-        <p>Temp max: @Model.main.temp_max°</p>
-        <p>Temp: @Model.main.temp°</p>
-        <p>Temp min: @Model.main.temp_min°</p>
-        <p>Feels Like: @Model.main.feels_like°</p>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
     }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+
+    h1 {
+        color: #333;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #333;
+        color: #fff;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    img {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="container">
+    <h1>Weather forecast for @Model.city.name</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Weekday</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Wind Speed (m/s)</th>
+                <th>Cloudiness (%)</th>
+                <th>Weather Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.list.GroupBy(item => DateTime.Parse(item.dt_txt).Date))
+            {
+                var dayForecast = item.First();
+                var date = DateTime.Parse(dayForecast.dt_txt);
+                <tr>
+                    <td>@date.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td>@date.ToString("dddd")</td> <!-- This will display the weekday -->
+                    <td>@dayForecast.main.temp°C</td>
+                    <td>@dayForecast.main.humidity%</td>
+                    <td>@dayForecast.wind.speed m/s</td>
+                    <td>@dayForecast.clouds.all%</td>
+                    <td>
+                        @foreach (var weather in dayForecast.weather)
+                        {
+                            <span>@weather.description</span>
+                            <img src="@($"https://openweathermap.org/img/wn/{weather.icon}.png")" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
