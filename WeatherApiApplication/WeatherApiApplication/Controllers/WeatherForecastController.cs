@@ -5,11 +5,11 @@ using WeatherApiApplication.Models;
 
 namespace WeatherApiApplication.Controllers
 {
-    public class HomeController : Controller
+    public class WeatherForecastController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<WeatherForecastController> _logger;
         
-        public HomeController(ILogger<HomeController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
         }
@@ -17,8 +17,8 @@ namespace WeatherApiApplication.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             HttpClient httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("https://localhost:7111/WeatherForecast");
-            var result = await httpClient.GetFromJsonAsync<Root>(httpClient.BaseAddress);
+            httpClient.BaseAddress = new Uri("https://localhost:7111/OpenWeatherAPI");
+            var result = await httpClient.GetFromJsonAsync<OpenWeatherRoot>(httpClient.BaseAddress);
             return View(result);
         }
 

@@ -2,7 +2,7 @@
 
 namespace WeatherApiApplication.Models
 {
-    public class Root
+    public class OpenWeatherRoot
     {
         public string cod { get; set; }
         public int message { get; set; }
