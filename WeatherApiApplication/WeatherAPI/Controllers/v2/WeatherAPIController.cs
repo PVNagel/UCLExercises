@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using MyClassLibrary;
 using System.Net.Http.Headers;
-using WeatherApiApplication.Models;
 
-namespace WeatherAPI.Controllers
+namespace WeatherAPI.Controllers.v2
 {
     [ApiController]
     [Route("[controller]")]
-    public class StormglassAPIController : ControllerBase
+    [ApiVersion("2.0")]
+    public class WeatherAPIController : ControllerBase
     {
-        private readonly ILogger<StormglassAPIController> _logger;
+        private readonly ILogger<WeatherAPIController> _logger;
 
-        public StormglassAPIController(ILogger<StormglassAPIController> logger)
+        public WeatherAPIController(ILogger<WeatherAPIController> logger)
         {
             _logger = logger;
         }

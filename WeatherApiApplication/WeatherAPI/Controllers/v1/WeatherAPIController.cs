@@ -2,15 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using WeatherApiApplication.Models;
 using MyClassLibrary;
 
-namespace WeatherAPI.Controllers
+namespace WeatherAPI.Controllers.v1
 {
     [ApiController]
     [Route("[controller]")]
-    public class OpenWeatherAPIController : ControllerBase
+    [ApiVersion("1.0")]
+    public class WeatherAPIController : ControllerBase
     {
-        private readonly ILogger<OpenWeatherAPIController> _logger;
+        private readonly ILogger<WeatherAPIController> _logger;
 
-        public OpenWeatherAPIController(ILogger<OpenWeatherAPIController> logger)
+        public WeatherAPIController(ILogger<WeatherAPIController> logger)
         {
             _logger = logger;
         }
