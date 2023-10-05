@@ -56,9 +56,9 @@ namespace PhilosophersTable
             {
                 lock (philosopher.RightChopstick)
                 {
-                    Console.WriteLine("Philosopher " + philosopher.Name + " is eating.");
-                    Thread.Sleep(3000);
-                    Console.WriteLine("Philosopher " + philosopher.Name + " has stopped eating.");
+                    Console.WriteLine(philosopher.Name + " is eating.");
+                    Thread.Sleep(1000);
+                    Console.WriteLine(philosopher.Name + " has stopped eating.");
                     philosopher.HasEaten = true;
                     lock (EatReport)
                     {
