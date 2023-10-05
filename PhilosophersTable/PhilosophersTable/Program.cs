@@ -52,18 +52,21 @@ namespace PhilosophersTable
 
         public static void Eat(Philosopher philosopher)
         {
-            lock (philosopher.LeftChopstick)
+            while (philosopher.HasEaten == false)
             {
-                lock (philosopher.RightChopstick)
+                lock (philosopher.LeftChopstick)
                 {
-                    Console.WriteLine(philosopher.Name + " is eating.");
-                    Thread.Sleep(1000);
-                    Console.WriteLine(philosopher.Name + " has stopped eating.");
-                    philosopher.HasEaten = true;
-                    lock (EatReport)
+                    lock (philosopher.RightChopstick)
                     {
-                        PhilosophersWhoHaveEaten = PhilosophersWhoHaveEaten + 1;
-                        Console.WriteLine("Philosophers who have eaten: " + PhilosophersWhoHaveEaten + "/5");
+                        Console.WriteLine(philosopher.Name + " is eating.");
+                        Thread.Sleep(1000);
+                        Console.WriteLine(philosopher.Name + " has stopped eating.");
+                        philosopher.HasEaten = true;
+                        lock (EatReport)
+                        {
+                            PhilosophersWhoHaveEaten = PhilosophersWhoHaveEaten + 1;
+                            Console.WriteLine("Philosophers who have eaten: " + PhilosophersWhoHaveEaten + "/5");
+                        }
                     }
                 }
             }
